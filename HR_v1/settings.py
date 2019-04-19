@@ -84,9 +84,6 @@ if HOSTNAME == 'MacBook-Pro-Timofey.local':
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'database_name',
-            'TEST': {
-                'NAME': 'test_database',
-            },
             'USER': 'timofejmalinin',
             'HOST': 'localhost',
             'PORT': '5432',

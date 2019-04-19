@@ -139,17 +139,10 @@ class SignupSerializer(serializers.Serializer):
         email = validated_data.pop('email')
         kind = validated_data.pop('kind')
 
-        # TODO: use User.objects.create
-        user = User()
-        user.email = email
-        user.set_password(password)
+        user = User.objects.create(username=username, email=email, password=password)
         # user.is_active = True
-        user.username = username
-        user.save()
 
-        #
-        profile = models.Profile.objects.create(user_id=user.id, kind=kind)
-        profile.save()
+        profile = models.Profile.objects.get(user=user)
 
         if kind == 'student':
             student = models.Student.objects.create(profile_id=profile.user_id)

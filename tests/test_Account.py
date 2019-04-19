@@ -13,7 +13,7 @@ pytestmark = [
 
 @pytest.fixture
 def user_of_ivan():
-    return User.objects.create(username='ivan', email='ivan@test.test')
+    return User.objects.create_user(username='ivan', email='ivan@test.test', password='xa6eiQuoo3')
 
 
 @pytest.fixture
@@ -24,6 +24,7 @@ def client():
 # noinspection PyMethodMayBeStatic
 class SignUpTest:
     def test_201(self, client):
+        # register anonymous user
         url = reverse('account-signup')
 
         data = {
@@ -38,6 +39,7 @@ class SignUpTest:
         assert response.data
 
     def test_400(self, client, user_of_ivan):
+        # register ivan, who already was registered
         url = reverse('account-signup')
 
         data = {
@@ -49,4 +51,32 @@ class SignUpTest:
         response = client.post(url, data=data)
 
         assert response.status_code == 400
+        assert response.data
+
+
+class LoginTest:
+    def test_200(self, client, user_of_ivan):
+        # login ivan, who already was registered
+        url = reverse('account-login')
+
+        data = {
+            'username': 'ivan',
+            'password': 'xa6eiQuoo3',
+        }
+        response = client.post(url, data=data)
+
+        assert response.status_code == 200
+        assert response.data
+
+    def test_401(self, client):
+        # login anonymous user
+        url = reverse('account-login')
+
+        data = {
+            'username': 'username',
+            'password': 'xa6eiQuoo3',
+        }
+        response = client.post(url, data=data)
+
+        assert response.status_code == 401
         assert response.data

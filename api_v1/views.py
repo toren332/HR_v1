@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from profiles import models
 from . import serializers
 
+
 # TODO: i18n where is it? dude?
 
 # ACCOUNTS BLOCK
@@ -20,15 +21,10 @@ class AccountViewSet(viewsets.ViewSet):
     def signup(self, request: 'Response') -> 'Response':
         serializer = serializers.SignupSerializer(data=request.data)
         if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         profile = serializer.save()
-
-        username = serializer.validated_data['username']
-        password = serializer.validated_data['password']
-
-        user = auth.authenticate(username=username, password=password)
-        auth.login(request, user)
+        auth.login(request, profile.user)
 
         return Response(serializers.ProfileSerializer(profile).data, status=status.HTTP_201_CREATED)
 
@@ -133,4 +129,3 @@ class LessonViewSet(viewsets.ModelViewSet):
 class UniversityViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UniversitySerializer
     queryset = models.University.objects.all()
-
