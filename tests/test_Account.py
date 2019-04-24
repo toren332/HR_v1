@@ -26,7 +26,6 @@ class SignUpTest:
     def test_201(self, client):
         # register anonymous user
         url = reverse('account-signup')
-
         data = {
             'username': 'username',
             'password': 'xa6eiQuoo3',
@@ -77,6 +76,24 @@ class LoginTest:
             'password': 'xa6eiQuoo3',
         }
         response = client.post(url, data=data)
+
+        assert response.status_code == 401
+        assert response.data
+
+
+class LogoutTest:
+    def test_200(self, client, user_of_ivan):
+        # logout ivan, who already was registered and login
+        LoginTest.test_200(LoginTest(), client=client, user_of_ivan=user_of_ivan)
+        url = reverse('account-logout')
+        response = client.post(url)
+        assert response.status_code == 200
+        assert response.data
+
+    def test_401(self, client):
+        # logout anonymous user
+        url = reverse('account-logout')
+        response = client.post(url)
 
         assert response.status_code == 401
         assert response.data

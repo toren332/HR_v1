@@ -108,7 +108,11 @@ class StudentGroupSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.Serializer):
-    PROFILE_KIND_CHOICES = models.Profile.PROFILE_KIND
+    PROFILE_KIND_CHOICES = (
+        ('teacher', 'Teacher'),
+        ('student', 'Student'),
+        ('client', 'Client'),
+    )
     username = serializers.CharField(max_length=128, required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(max_length=128, required=True)  # TODO: validators (kwargs)
@@ -139,10 +143,11 @@ class SignupSerializer(serializers.Serializer):
         email = validated_data.pop('email')
         kind = validated_data.pop('kind')
 
-        user = User.objects.create(username=username, email=email, password=password)
+        user = User.objects.create_user(username=username, email=email, password=password)
         # user.is_active = True
 
         profile = models.Profile.objects.get(user=user)
+        profile.kind = kind
 
         if kind == 'student':
             student = models.Student.objects.create(profile_id=profile.user_id)

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 
@@ -12,7 +12,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
+    def create_user_profile(sender, created, instance, **kwargs):
         if created:
             Profile.objects.create(user=instance)
 
@@ -30,13 +30,6 @@ class Profile(models.Model):
                                       help_text='Indicates account has been verified for identity')
     is_admin = models.BooleanField('is_admin', default=False,
                                    help_text='Indicates account has been admin for identity')
-    PROFILE_KIND = (
-        ('teacher', 'Teacher'),
-        ('student', 'Student'),
-        ('client', 'Client'),
-    )
-    kind = models.CharField(choices=PROFILE_KIND, default='student', max_length=7,
-                            help_text='Indicates account type student or teacher')
 
     def __str__(self):
         return self.user.username + '  –  ' + self.kind

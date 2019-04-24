@@ -4,6 +4,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+import copy
 
 from profiles import models
 from . import serializers
@@ -15,8 +16,6 @@ from . import serializers
 
 
 class AccountViewSet(viewsets.ViewSet):
-    # TODO: functional tests
-
     @action(detail=False, methods=['POST'])
     def signup(self, request: 'Response') -> 'Response':
         serializer = serializers.SignupSerializer(data=request.data)
@@ -50,12 +49,13 @@ class AccountViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['POST'])
     def logout(self, request):
-        if request.user.is_authenticated:
+        if not request.user.is_authenticated:
+            response = {"logout": False}
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        else:
             user = request.user
             auth.logout(request)
             response = {"logout from " + str(user.id): True}
-        else:
-            response = {"logout": False}
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -76,8 +76,9 @@ class StudentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['POST'])
     def enter_group(self, request, pk=None):
-        data = request.data
+        data = copy.copy(request.data)
         data['student'] = pk
+
         serializer = serializers.StudentGroupSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -88,7 +89,7 @@ class StudentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['POST'])
     def exit_group(self, request, pk=None):
-        data = request.data
+        data = copy.copy(request.data)
         data['student'] = pk  # TODO: wtf?
 
         if not models.StudentGroup.objects.filter(student=data['student'], group=data['group']):
