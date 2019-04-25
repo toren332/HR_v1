@@ -22,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Profile
-        fields = ['user', 'first_name', 'middle_name', 'last_name', 'is_verified', 'is_admin', 'kind']
+        fields = ['user', 'first_name', 'middle_name', 'last_name', 'is_verified', 'is_admin']
 
 
 class TeacherSerializer(serializers.ModelSerializer):

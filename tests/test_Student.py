@@ -3,6 +3,12 @@ import pytest
 from django.contrib.auth.models import User
 from profiles import models
 
+# TODO: https://www.python.org/dev/peps/pep-0008/
+# https://www.python.org/dev/peps/pep-0008/#descriptive-naming-styles
+# test_Account.py -> test_account.py
+
+# TODO: install flask8 and run it
+# TODO: install pep8 and run it
 
 from django.urls import reverse
 
@@ -33,10 +39,15 @@ class EnterGroupTest:
     def test_201(self, student_of_ivan, client):
         # Ivan enter group
         group = models.Group.objects.create(name='Group12')
+
+        # WHAT?! student_of_ivan.profile.user.id == student_of_ivan.id
+        # coz your Profile.id == User.id, isn't it?
         student_id = student_of_ivan.profile.user.id
+
         data = {
             'group': group.id,
         }
+        # https://realpython.com/python-string-formatting/#3-string-interpolation-f-strings-python-36
         url = '/api_v1/students/'+str(student_id)+'/enter_group/'
         response = client.post(url, data=data)
 

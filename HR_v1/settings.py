@@ -79,6 +79,7 @@ except:
     HOSTNAME = 'localhost'
 
 
+# TODO: https://techstream.org/Bits/Local-Settings-in-django
 if HOSTNAME == 'MacBook-Pro-Timofey.local':
     DATABASES = {
         'default': {

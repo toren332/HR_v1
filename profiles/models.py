@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     """Профиль пользователя."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, created, instance, **kwargs):
@@ -31,13 +31,13 @@ class Profile(models.Model):
     is_admin = models.BooleanField('is_admin', default=False,
                                    help_text='Indicates account has been admin for identity')
 
-    def __str__(self):
-        return self.user.username + '  –  ' + self.kind
+    # def __str__(self):
+    #     return self.user.username + '  –  ' + self.kind
 
 
 class Student(models.Model):
     """Профиль студента."""
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.profile.user.username
@@ -45,7 +45,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     """Профиль учителя."""
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.profile.user.username
@@ -53,7 +53,7 @@ class Teacher(models.Model):
 
 class Client(models.Model):
     """Профиль клиента."""
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.profile.user.username
@@ -64,8 +64,7 @@ class Client(models.Model):
 
 class Group(models.Model):
     """Группа."""
-    name = models.CharField('name', max_length=150,
-                            help_text='Group name', unique=True)
+    name = models.CharField('name', max_length=150, help_text='Group name', unique=True)
     is_primary = models.BooleanField('is_primary', default=False,
                                      help_text='Indicates is the group primary')
 
@@ -88,6 +87,7 @@ class Lesson(models.Model):
                                           related_name='secondary_teacher')
 
     class Meta:
+        # TODO: use " or ', not the both
         unique_together = (("name", "type", "primary_teacher"),)
 
     def __str__(self):
@@ -100,7 +100,6 @@ class University(models.Model):
                             help_text='university name')
 
     english_name = models.CharField('university english name', max_length=150, blank=False, unique=True,
-                                    primary_key=True,
                                     help_text='university english name')  # нужно для использования PK
 
     description = models.CharField('university description', max_length=5000, blank=True,
@@ -112,11 +111,9 @@ class University(models.Model):
 
 class Building(models.Model):
     """Строение."""
-    name = models.CharField('building name', max_length=150, blank=False, unique=True, primary_key=True,
-                            help_text='building name')
+    name = models.CharField('building name', max_length=150, blank=False, unique=True, help_text='building name')
 
-    address = models.CharField('building address', max_length=5000, blank=True,
-                               help_text='building address')
+    address = models.CharField('building address', max_length=5000, blank=True, help_text='building address')
 
     university = models.ForeignKey(University, on_delete=models.CASCADE)
 
@@ -126,8 +123,7 @@ class Building(models.Model):
 
 class Auditory(models.Model):
     """Аудитория."""
-    name = models.CharField('auditory name', max_length=50, blank=False, unique=True, primary_key=True,
-                            help_text='auditory name')
+    name = models.CharField('auditory name', max_length=50, blank=False, unique=True, help_text='auditory name')
 
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
 
