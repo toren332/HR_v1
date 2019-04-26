@@ -1,8 +1,8 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-
+from google_calendar import main as gcal
 
 # ACCOUNTS BLOCK
 
@@ -74,7 +74,7 @@ class Group(models.Model):
 
 class Lesson(models.Model):
     """Занятие."""
-    name = models.CharField('lesson name', max_length=150, blank=False,
+    name = models.CharField('lesson_name', max_length=150, blank=False,
                             help_text='lesson name')
 
     TYPE_CHOICES = (
@@ -87,8 +87,7 @@ class Lesson(models.Model):
                                           related_name='secondary_teacher')
 
     class Meta:
-        # TODO: use " or ', not the both
-        unique_together = (("name", "type", "primary_teacher"),)
+        unique_together = (('name', 'type', 'primary_teacher'),)
 
     def __str__(self):
         return self.name + ' - ' + self.type
@@ -100,13 +99,18 @@ class University(models.Model):
                             help_text='university name')
 
     english_name = models.CharField('university english name', max_length=150, blank=False, unique=True,
-                                    help_text='university english name')  # нужно для использования PK
+                                    help_text='university english name')  # нужно, потом придумаю зачем
 
     description = models.CharField('university description', max_length=5000, blank=True,
                                    help_text='university description')
 
     def __str__(self):
         return self.name
+
+
+@receiver(pre_save, sender=University)
+def create_google_calendar(sender, instance, **kwargs):
+    gcal.create_calendar(instance.name)
 
 
 class Building(models.Model):

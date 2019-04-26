@@ -1,14 +1,15 @@
+import copy
+
 from django.contrib import auth
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-import copy
 
 from profiles import models
-from . import serializers
 
+from . import serializers
 
 # TODO: i18n where is it? dude?
 
@@ -60,7 +61,6 @@ class AccountViewSet(viewsets.ViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    # TODO: smoke test (check for status_code only)
     serializer_class = serializers.UserSerializer
     queryset = models.User.objects.all()
 

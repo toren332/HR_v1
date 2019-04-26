@@ -1,5 +1,6 @@
-from . import views as profiles_views
 from rest_framework import routers
+
+from . import views as profiles_views
 
 router = routers.DefaultRouter()
 
@@ -17,8 +18,8 @@ router.register('clients', profiles_views.ClientViewSet, basename='clients')
 
 router.register('groups', profiles_views.GroupViewSet, basename='groups')
 router.register('lessons', profiles_views.LessonViewSet, basename='lessons')
-router.register('universities', profiles_views.UniversityViewSet, basename='universities')
+router.register('universities', profiles_views.UniversityViewSet,
+                basename='universities')
 
 
 urlpatterns = router.urls
-

@@ -1,8 +1,10 @@
-from rest_framework import serializers
-from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
-from profiles import models
+from django.contrib.auth.models import User
 from django.db.models import Q
+
+from rest_framework import serializers
+
+from profiles import models
 
 # ACCOUNTS BLOCK
 
@@ -74,8 +76,8 @@ class LessonSerializer(serializers.ModelSerializer):
 class UniversitySerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.Lesson
-        fields = ('name', 'description')
+        model = models.University
+        fields = ('name', 'english_name', 'description')
 
 
 # OBJECTS TRASH BLOCK

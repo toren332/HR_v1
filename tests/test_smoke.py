@@ -1,6 +1,6 @@
 import pytest
-from rest_framework.test import APIClient
 
+from rest_framework.test import APIClient
 
 pytestmark = [
     pytest.mark.django_db,
@@ -59,3 +59,14 @@ class UniversityViewSetTest:
     def test_200(self, client):
         resp = client.get('http://127.0.0.1:8000/api_v1/universities/')
         assert resp.status_code == 200
+
+
+class UniversityCreateTest:
+    def test_200(self, client):
+        data = {
+            "name": "МГУ",
+            "english_name": "MSU",
+            "description": "asfkja'sdlkfj"
+        }
+        resp = client.post('http://127.0.0.1:8000/api_v1/universities/', data=data)
+        assert resp.status_code == 201
