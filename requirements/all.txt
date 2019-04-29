@@ -1,9 +1,13 @@
 Django
 djangorestframework
 
-psycopg2
+psycopg2-binary
 
 django-extensions
+
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
 
 pytest
 pytest-django
